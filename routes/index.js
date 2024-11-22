@@ -86,21 +86,16 @@ router.put("/upDateTasks/:ObjectId", function (req, res, next) {
 
 
 router.delete("/tasks", (req, res) => {
-  Task.deleteOne({ ObjectId: req.body.ObjectId }).then(deleteDoc => {
+  Task.deleteOne({ _id: req.body.Id }).then(deleteDoc => {
     if (deleteDoc.deletedCount > 0) {
       Task.find().then(data => {
         res.json({ result: true, Task: data })
-        User.findOne({ tasks: req.body.Id }).then((Userdoc) => {
+        User.findOne({ token: req.body.token }).then((Userdoc) => {
           //User.tasks=Userdoc.tasks.filter(req.body.Id))
           console.log(Userdoc.tasks)
-           for (let i = 0; i < Userdoc.tasks.length; i++) {
-            if (Userdoc.tasks[i] !== req.body.ObjectId) {
-              Userdoc.tasks[i].filter
-              Userdoc.save()
-               console.log(Userdoc.tasks[i])
-               console.log(req.body.Id)
-             }
-          }
+          Userdoc.tasks = Userdoc.tasks.filter((ObjectId) => String(ObjectId) !== String(req.body.Id))
+
+          Userdoc.save()
 
         })
       });
